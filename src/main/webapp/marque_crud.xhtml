@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+   <title>Marques</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+</h:head>
+
+<f:view>
+   <div class="card">
+      <ui:insert name="menu">
+         <ui:include src="menu.xhtml"></ui:include>
+      </ui:insert>
+
+      <h:form id="form">
+
+         <p:growl id="messages" showDetail="true" />
+
+         <p:toolbar>
+            <p:toolbarGroup>
+               <p:commandButton value="New" icon="pi pi-plus"
+                                actionListener="#{marqueMBean.openNew}"
+                                update=":dialogs:manage-marque-content"
+                                oncomplete="PF('manageMarqueDialog').show()"
+                                styleClass="ui-button-success" style="margin-right: .5rem">
+                  <p:resetInput target=":dialogs:manage-marque-content" />
+               </p:commandButton>
+            </p:toolbarGroup>
+         </p:toolbar>
+
+         <p:dataView var="marque" value="#{marqueMBean.marques}" rows="12" paginator="true"
+                     rowsPerPageTemplate="6,12,16"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+            <p:dataViewListItem>
+               <div class="marque-list-item px-5 d-flex justify-content-between align-items-center">
+                  <div class="marque-list-detail d-flex flex-column">
+                     <div class="marque-name fw-bold h4">#{marque.nom}</div>
+                     <div class="marque-description h5">#{marque.id}</div>
+                  </div>
+                  <div class="marque-list-action">
+                     <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-marque-content"
+                                      oncomplete="PF('manageMarqueDialog').show()"
+                                      styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                        <f:setPropertyActionListener value="#{marque}" target="#{marqueMBean.marque}" />
+                        <p:resetInput target=":dialogs:manage-marque-content" />
+                     </p:commandButton>
+                     <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                      process="@this"
+                                      oncomplete="PF('deleteMarqueDialog').show()">
+                        <f:setPropertyActionListener value="#{marque}" target="#{marqueMBean.marque}" />
+                     </p:commandButton>
+                  </div>
+               </div>
+            </p:dataViewListItem>
+         </p:dataView>
+
+      </h:form>
+
+      <h:form id="dialogs">
+         <p:dialog header="Détails de la marque" showEffect="fade" modal="true" widgetVar="manageMarqueDialog"
+                   responsive="true">
+            <p:outputPanel id="manage-marque-content" class="ui-fluid">
+               <p:outputPanel rendered="#{not empty marqueMBean.marque}">
+<!--                  <div class="field mb-4">-->
+<!--                     <p:outputLabel for="id">Id</p:outputLabel>-->
+<!--                     <p:inputText id="id" value="#{marqueMBean.marque.id}" required="true" />-->
+<!--                  </div>-->
+                  <div class="field">
+                     <p:outputLabel for="name">Nom de la marque</p:outputLabel>
+                     <p:inputText id="name" value="#{marqueMBean.marque.nom}" required="true"/>
+                  </div>
+               </p:outputPanel>
+            </p:outputPanel>
+
+            <f:facet name="footer">
+               <p:commandButton value="Save" icon="pi pi-check" actionListener="#{marqueMBean.save}"
+                                update="manage-marque-content" process="manage-marque-content @this" />
+               <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageMarqueDialog').hide()"
+                                class="ui-button-secondary" type="button" />
+            </f:facet>
+         </p:dialog>
+
+         <p:confirmDialog widgetVar="deleteMarqueDialog" showEffect="fade" width="300"
+                          message="Supprimer la catégorie ?" header="Confirm" severity="warn">
+            <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{marqueMBean.deleteMarque}"
+                             process="@this"
+                             oncomplete="PF('deleteMarqueDialog').hide()" />
+            <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                             onclick="PF('deleteMarqueDialog').hide()" />
+         </p:confirmDialog>
+
+      </h:form>
+
+   </div>
+</f:view>
+</html>

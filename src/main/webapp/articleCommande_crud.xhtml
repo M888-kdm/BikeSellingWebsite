@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+   <title>Articles Commande</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+</h:head>
+
+<f:view>
+   <div class="card crud-demo">
+
+      <ui:insert name="menu">
+         <ui:include src="menu.xhtml"></ui:include>
+      </ui:insert>
+
+      <h:form id="form">
+         <p:growl id="messages" showDetail="true" />
+
+         <p:toolbar>
+            <p:toolbarGroup>
+               <p:commandButton value="New" icon="pi pi-plus"
+                                actionListener="#{articleCommandeMBean.openNew}"
+                                oncomplete="PF('manageArticleCommandeDialog').show()"
+                                styleClass="ui-button-success" style="margin-right: .5rem">
+                  <p:resetInput target=":dialogs:manage-articleCommande-content" />
+               </p:commandButton>
+            </p:toolbarGroup>
+         </p:toolbar>
+
+         <p:dataTable id="dt-articleCommandes" widgetVar="dtArticleCommandes" var="articleCommande" value="#{articleCommandeMBean.articleCommandes}"
+                      reflow="true" styleClass="articleCommandes-table"
+                      rowKey="#{articleCommande.id}" paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom">
+            <f:facet name="header">
+               <div class="articleCommandes-table-header d-flex justify-content-between align-items-cente">
+                  <span style="font-weight: bold">Articles Commande</span>
+                  <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                        <p:inputText id="globalFilter" onkeyup="PF('dtArticleCommandes').filter()" placeholder="Search" />
+                  </span>
+               </div>
+            </f:facet>
+            <p:column headerText="Produit" sortBy="#{articleCommande.produit.nom}">
+               <h:outputText value="#{articleCommande.produit.nom}"/>
+            </p:column>
+            <p:column headerText="Quantité" sortBy="#{articleCommande.quantite}">
+               <h:outputText value="#{articleCommande.quantite}" />
+            </p:column>
+            <p:column headerText="Prix" sortBy="#{articleCommande.prixDepart}" filterBy="#{articleCommande.prixDepart}">
+               <h:outputText value="#{articleCommande.prixDepart}" style="font-weight: 700">
+                  <f:convertNumber currencySymbol="$" type="currency" />
+               </h:outputText>
+            </p:column>
+
+            <p:column exportable="false">
+               <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-articleCommande-content"
+                                oncomplete="PF('manageArticleCommandeDialog').show()"
+                                styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                  <f:setPropertyActionListener value="#{articleCommande}" target="#{articleCommandeMBean.articleCommande}" />
+                  <p:resetInput target=":dialogs:manage-articleCommande-content" />
+               </p:commandButton>
+               <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                process="@this"
+                                oncomplete="PF('deleteArticleCommandeDialog').show()">
+                  <f:setPropertyActionListener value="#{articleCommande}" target="#{articleCommandeMBean.articleCommande}" />
+               </p:commandButton>
+            </p:column>
+
+         </p:dataTable>
+      </h:form>
+
+      <h:form id="dialogs">
+         <p:dialog header="Détails de l'article" showEffect="fade" modal="true" widgetVar="manageArticleCommandeDialog"
+                   responsive="true">
+            <p:outputPanel id="manage-articleCommande-content" class="ui-fluid">
+               <p:outputPanel rendered="#{not empty articleCommandeMBean.articleCommande}">
+                  <div class="formgrid grid d-flex flex-column my-4">
+                     <div class="field">
+                        <p:outputLabel for="quantite">Quantité</p:outputLabel>
+                        <p:spinner value="#{articleCommandeMBean.articleCommande.quantite}" id="quantite" min="0" required="true"/>
+                     </div>
+                     <div class="field">
+                        <p:outputLabel for="produit">Produit Concerné</p:outputLabel>
+                        <p:selectOneMenu id="produit" value="#{articleCommandeMBean.produitId}" required="true" label="#{articleCommandeMBean.articleCommande.produit.nom}">
+                           <f:selectItem itemValue="#{articleCommandeMBean.articleCommande.produit.id}" itemLabel="#{articleCommandeMBean.articleCommande.produit.nom}" noSelectionOption="true"/>
+                           <f:selectItems value="#{produitMBean.produits}"
+                                          var="produit"
+                                          itemLabel="#{produit.nom}"
+                                          itemValue="#{produit.id}"/>
+                        </p:selectOneMenu>
+                     </div>
+                     <div class="field">
+                        <p:outputLabel for="commande">Numéro de Commande</p:outputLabel>
+                        <p:selectOneMenu id="commande" value="#{articleCommandeMBean.commandeId}" required="true" label="#{articleCommandeMBean.articleCommande.commande.numero}">
+                           <f:selectItem itemValue="#{articleCommandeMBean.articleCommande.commande.numero}" itemLabel="#{articleCommandeMBean.articleCommande.commande.numero}" noSelectionOption="true"/>
+                           <f:selectItems value="#{commandeMBean.commandes}"
+                                          var="commande"
+                                          itemLabel="#{commande.numero}"
+                                          itemValue="#{commande.numero}"/>
+                        </p:selectOneMenu>
+                     </div>
+                  </div>
+               </p:outputPanel>
+            </p:outputPanel>
+
+            <f:facet name="footer">
+               <p:commandButton value="Save" icon="pi pi-check" actionListener="#{articleCommandeMBean.save}"
+                                update="manage-articleCommande-content" process="manage-articleCommande-content @this" />
+               <p:commandButton value="Cancel" icon="pi pi-times" onclick="PF('manageArticleCommandeDialog').hide()"
+                                class="ui-button-secondary" type="button" />
+            </f:facet>
+         </p:dialog>
+
+         <p:confirmDialog widgetVar="deleteArticleCommandeDialog" showEffect="fade" width="300"
+                          message="Supprimer le articleCommande?" header="Confirm" severity="warn">
+            <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{articleCommandeMBean.deleteArticleCommande}"
+                             process="@this"
+                             oncomplete="PF('deleteArticleCommandeDialog').hide()" />
+            <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                             onclick="PF('deleteArticleCommandeDialog').hide()" />
+         </p:confirmDialog>
+
+      </h:form>
+   </div>
+</f:view>
+</html>
