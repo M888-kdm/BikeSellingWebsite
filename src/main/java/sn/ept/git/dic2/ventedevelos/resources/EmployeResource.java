@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import sn.ept.git.dic2.ventedevelos.entities.Employe;
 import sn.ept.git.dic2.ventedevelos.facades.EmployeFacade;
+import sn.ept.git.dic2.ventedevelos.facades.PersonneFacade;
 import sn.ept.git.dic2.ventedevelos.utils.CustomResponse;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class EmployeResource {
 
     @EJB
     private EmployeFacade employeFacade;
+
+    @EJB
+    private PersonneFacade personneFacade;
 
     @GET
     @Operation(
@@ -86,7 +90,7 @@ public class EmployeResource {
         if(employe == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        employeFacade.remove(employe);
+        personneFacade.remove(employe);
         CustomResponse customResponse = new CustomResponse("L'employé " + employe.getId() + " a été supprimé");
         return Response.status(Response.Status.OK).entity(customResponse).build();
     }

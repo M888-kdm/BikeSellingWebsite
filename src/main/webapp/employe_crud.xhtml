@@ -94,9 +94,15 @@
                    responsive="true">
             <p:outputPanel id="manage-employe-content" class="ui-fluid">
                <p:outputPanel rendered="#{not empty employeMBean.employe}">
-                  <div class="field">
-                     <p:outputLabel for="nom">Nom</p:outputLabel>
-                     <p:inputText id="nom" value="#{employeMBean.employe.nom}" required="true" />
+                  <div class="formgrid grid d-flex justify-content-between d-flex my-4">
+                     <div class="field col-5">
+                        <p:outputLabel for="prenom">Prénom</p:outputLabel>
+                        <p:inputText id="prenom" value="#{employeMBean.employe.prenom}" required="true" />
+                     </div>
+                     <div class="field col-5">
+                        <p:outputLabel for="nom">Nom</p:outputLabel>
+                        <p:inputText id="nom" value="#{employeMBean.employe.nom}" required="true" />
+                     </div>
                   </div>
                   <div class="formgrid grid d-flex justify-content-between d-flex my-4">
                      <div class="field col-5">

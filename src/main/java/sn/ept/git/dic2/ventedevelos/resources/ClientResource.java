@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import sn.ept.git.dic2.ventedevelos.entities.Client;
 import sn.ept.git.dic2.ventedevelos.facades.ClientFacade;
+import sn.ept.git.dic2.ventedevelos.facades.PersonneFacade;
 import sn.ept.git.dic2.ventedevelos.utils.CustomResponse;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class ClientResource {
 
     @EJB
     private ClientFacade clientFacade;
+
+    @EJB
+    private PersonneFacade personneFacade;
 
     @GET
     @Operation(
@@ -86,7 +90,7 @@ public class ClientResource {
         if(client == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        clientFacade.remove(client);
+        personneFacade.remove(client);
         CustomResponse customResponse = new CustomResponse("Le client " + client.getId() + " a été supprimé");
         return Response.status(Response.Status.OK).entity(customResponse).build();
     }

@@ -13,6 +13,7 @@ import sn.ept.git.dic2.ventedevelos.facades.StockFacade;
 import sn.ept.git.dic2.ventedevelos.utils.CustomResponse;
 
 import java.util.List;
+import java.util.Random;
 
 @Path("/stock")
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -38,6 +39,7 @@ public class StockResource {
             description = "Ajoute le stock s'il n'existe pas et la modifie s'il existe"
     )
     public Stock addStock(Stock stock){
+        System.out.println("1");
         if(stock.getStockPK() == null){
             stockFacade.create(stock);
         }

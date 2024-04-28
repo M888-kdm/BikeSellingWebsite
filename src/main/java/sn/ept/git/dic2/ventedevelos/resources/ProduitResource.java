@@ -27,7 +27,6 @@ public class ProduitResource {
             description = "Affiche la liste de tous les produits"
     )
     public List<Produit> getProduits(){
-        System.out.println("Moussa");
         return produitFacade.findAll();
     }
 
@@ -43,8 +42,9 @@ public class ProduitResource {
         }
         else {
             Produit p = produitFacade.find(produit.getId());
-            if(p != null)
+            if(p != null){
                 produitFacade.edit(produit);
+            }
             else
                 produitFacade.create(produit);
         }

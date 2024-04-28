@@ -101,7 +101,7 @@
                      </div>
                      <div class="field col">
                         <p:outputLabel for="annee">Année</p:outputLabel>
-                        <p:spinner value="#{produitMBean.selectedProduct.anneeModel}" id="annee" min="2000" required="true"/>
+                        <p:inputNumber value="#{produitMBean.selectedProduct.anneeModel}" id="annee" thousandSeparator="" minValue="2000" required="true"/>
                      </div>
                   </div>
                   <div class="formgrid grid d-flex">
